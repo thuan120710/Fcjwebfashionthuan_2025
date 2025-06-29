@@ -1,0 +1,24 @@
+{
+  "name": "e-commerce-website",
+  "version": "1.0.0",
+  "description": "A full-stack e-commerce platform built with React, Node.js, Express, and MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": [
+    "ecommerce",
+    "react",
+    "node",
+    "express",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

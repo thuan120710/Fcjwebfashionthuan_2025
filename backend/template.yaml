@@ -1,0 +1,394 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Deploy Express.js backend as a single Lambda function with API Gateway proxy
+
+Resources:
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'OPTIONS,GET,POST,PUT,DELETE'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+
+  ExpressApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: lambda.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 512
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: ShopUsers
+        - DynamoDBCrudPolicy:
+            TableName: ShopProducts
+        - DynamoDBCrudPolicy:
+            TableName: ShopCategories
+        - DynamoDBCrudPolicy:
+            TableName: ShopBrands
+        - DynamoDBCrudPolicy:
+            TableName: ShopCarts
+        - DynamoDBCrudPolicy:
+            TableName: ShopOrders
+        - DynamoDBCrudPolicy:
+            TableName: ShopOrderHistories
+        - DynamoDBCrudPolicy:
+            TableName: ShopCoupons
+        - DynamoDBCrudPolicy:
+            TableName: ShopShippingCoupons
+        - DynamoDBCrudPolicy:
+            TableName: ShopPayments
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:GetItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Scan
+                - dynamodb:Query
+                - s3:PutObject
+                - s3:GetObject
+                - s3:DeleteObject
+              Resource:
+                - !GetAtt ShopReviewsTable.Arn
+                - !Sub "${ShopReviewsTable.Arn}/index/*"
+                - arn:aws:s3:::uploands-avatars-2025/*
+      Environment:
+        Variables:
+          USERS_TABLE_NAME: ShopUsers
+          PRODUCTS_TABLE_NAME: ShopProducts
+          CATEGORIES_TABLE_NAME: ShopCategories
+          BRANDS_TABLE_NAME: ShopBrands
+          CARTS_TABLE_NAME: ShopCarts
+          ORDERS_TABLE_NAME: ShopOrders
+          ORDER_HISTORIES_TABLE_NAME: ShopOrderHistories
+          COUPONS_TABLE_NAME: ShopCoupons
+          SHIPPING_COUPONS_TABLE_NAME: ShopShippingCoupons
+          PAYMENTS_TABLE_NAME: ShopPayments
+          GOOGLE_CLIENT_ID:
+          GOOGLE_CLIENT_SECRET:
+          JWT_SECRET: your_jwt_secret_here
+          REVIEWS_TABLE_NAME: ShopReviews
+          AVATAR_BUCKET_NAME: uploands-avatars-2025
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /{proxy+}
+            Method: ANY
+
+  ShopUsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopUsers
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EmailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopProductsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopProducts
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: category
+          AttributeType: S
+        - AttributeName: brand
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: ProductNameIndex
+          KeySchema:
+            - AttributeName: name
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: ProductCategoryIndex
+          KeySchema:
+            - AttributeName: category
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: ProductBrandIndex
+          KeySchema:
+            - AttributeName: brand
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopCategoriesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopCategories
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CategoryNameIndex
+          KeySchema:
+            - AttributeName: name
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopBrandsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopBrands
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: slug
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: BrandNameIndex
+          KeySchema:
+            - AttributeName: name
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: BrandSlugIndex
+          KeySchema:
+            - AttributeName: slug
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopCartsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopCarts
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserIdIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopOrdersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopOrders
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserIdIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopOrderHistoriesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopOrderHistories
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: orderId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserIdIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: OrderIdIndex
+          KeySchema:
+            - AttributeName: orderId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopCouponsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopCoupons
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: code
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CodeIndex
+          KeySchema:
+            - AttributeName: code
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopShippingCouponsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopShippingCoupons
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: code
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CodeIndex
+          KeySchema:
+            - AttributeName: code
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopPaymentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopPayments
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: user
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserIdIndex
+          KeySchema:
+            - AttributeName: user
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  ShopReviewsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ShopReviews
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: productId
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: ProductIndex
+          KeySchema:
+            - AttributeName: productId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: UserIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  ShopUsersTableName:
+    Description: "DynamoDB Table Name for Users"
+    Value: !Ref ShopUsersTable
+  ShopProductsTableName:
+    Description: "DynamoDB Table Name for Products"
+    Value: !Ref ShopProductsTable
+  ShopCategoriesTableName:
+    Description: "DynamoDB Table Name for Categories"
+    Value: !Ref ShopCategoriesTable
+  ShopBrandsTableName:
+    Description: "DynamoDB Table Name for Brands"
+    Value: !Ref ShopBrandsTable
+  ShopCartsTableName:
+    Description: "DynamoDB Table Name for Carts"
+    Value: !Ref ShopCartsTable
+  ShopOrdersTableName:
+    Description: "DynamoDB Table Name for Orders"
+    Value: !Ref ShopOrdersTable
+  ShopOrderHistoriesTableName:
+    Description: "DynamoDB Table Name for OrderHistories"
+    Value: !Ref ShopOrderHistoriesTable
+  ShopCouponsTableName:
+    Description: "DynamoDB Table Name for Coupons"
+    Value: !Ref ShopCouponsTable
+  ShopShippingCouponsTableName:
+    Description: "DynamoDB Table Name for Shipping Coupons"
+    Value: !Ref ShopShippingCouponsTable
+  ShopPaymentsTableName:
+    Description: "DynamoDB Table Name for Payments"
+    Value: !Ref ShopPaymentsTable
+  ReviewsTableName:
+    Description: "DynamoDB Table Name for Reviews"
+    Value: !Ref ShopReviewsTable

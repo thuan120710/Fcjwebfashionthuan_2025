@@ -1,0 +1,128 @@
+.orderDetailContainer {
+  padding: 40px 0;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+  min-height: 100vh;
+}
+
+.detailPaper {
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(127, 156, 245, 0.18), 0 2px 8px rgba(167, 139, 250, 0.10);
+  border: 2.5px solid;
+  border-image: linear-gradient(90deg, #7f9cf5 0%, #a78bfa 100%) 1;
+  background: #f8faff;
+  margin-bottom: 40px;
+  transition: box-shadow 0.3s, transform 0.2s, border-color 0.3s;
+  padding: 36px 40px;
+  animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.detailPaper:hover {
+  box-shadow: 0 16px 48px rgba(127, 156, 245, 0.22), 0 4px 16px rgba(167, 139, 250, 0.12);
+  transform: translateY(-6px) scale(1.015);
+  border-color: #a78bfa;
+}
+
+.sectionTitle {
+  color: #7c3aed;
+  font-weight: bold;
+  margin-bottom: 14px;
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+}
+
+.infoText {
+  color: #2d3748;
+  font-size: 1.12rem;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.detailTable {
+  margin-top: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #e0e7ff;
+  box-shadow: 0 2px 8px rgba(127, 156, 245, 0.08);
+  animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.detailTable th, .detailTable td {
+  border-bottom: 1.5px solid #e3e8f7;
+  padding: 14px 18px;
+  font-size: 1.08rem;
+}
+
+.detailTable th {
+  background: linear-gradient(90deg, #7f9cf5 0%, #a78bfa 100%);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px #7f9cf5;
+}
+
+.detailTable tr:last-child td {
+  border-bottom: none;
+}
+
+.detailTable tr:hover td {
+  background: #c7d2fe;
+  transition: background 0.2s;
+}
+
+.totalBox {
+  margin-top: 24px;
+  background: linear-gradient(90deg, #fffbe6 0%, #fef9c3 100%);
+  border-radius: 14px;
+  padding: 22px 32px;
+  box-shadow: 0 2px 12px rgba(245, 158, 66, 0.10);
+  color: #f59e42;
+  font-size: 1.25rem;
+  font-weight: bold;
+  animation: fadeInUp 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+.discountBox {
+  background: linear-gradient(90deg, #e0ffe6 0%, #b2f5ea 100%);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 18px;
+  margin-bottom: 10px;
+  color: #22543d;
+  font-weight: 500;
+  box-shadow: 0 1px 6px rgba(34, 84, 61, 0.08);
+  border-left: 4px solid #38b2ac;
+}
+
+.shippingDiscountBox {
+  background: linear-gradient(90deg, #e0f7ff 0%, #c3eaff 100%);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 18px;
+  margin-bottom: 10px;
+  color: #22577a;
+  font-weight: 500;
+  box-shadow: 0 1px 6px rgba(34, 87, 122, 0.08);
+  border-left: 4px solid #38a1db;
+}
+
+.productImageBox {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 1px 4px rgba(127, 156, 245, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

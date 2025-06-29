@@ -1,0 +1,81 @@
+.card {
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(120, 100, 210, 0.10);
+  border: 1.5px solid #e3eafc;
+  background: linear-gradient(135deg, #fafdff 60%, #f3eaff 100%);
+  transition: box-shadow 0.3s, border 0.3s, transform 0.3s;
+  overflow: hidden;
+  position: relative;
+}
+.card:hover {
+  box-shadow: 0 8px 32px rgba(120, 100, 210, 0.16);
+  border: 1.5px solid #b39ddb;
+  transform: translateY(-4px) scale(1.02);
+}
+.slideContainer {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  background: linear-gradient(135deg, #f6fafd 60%, #f3eaff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+.slideImage {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1.5px solid #e3eafc;
+  box-shadow: 0 2px 8px rgba(120, 100, 210, 0.07);
+  opacity: 0;
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  margin: auto;
+  transition: opacity 0.7s cubic-bezier(.4,2,.3,1), transform 0.5s cubic-bezier(.4,2,.3,1), box-shadow 0.3s;
+  background: #f6fafd;
+  transform: rotate(0deg) scale(1);
+}
+.slideImageActive {
+  opacity: 1;
+  z-index: 2;
+  transform: scale(1.04) rotate(-2deg);
+  box-shadow: 0 8px 32px rgba(120, 100, 210, 0.16);
+}
+.slideDots {
+  position: absolute;
+  bottom: 12px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 3;
+}
+.dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: #d1c4e9;
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 4px rgba(120, 100, 210, 0.08);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.dotActive {
+  background: linear-gradient(135deg, #90caf9 0%, #b39ddb 100%);
+  transform: scale(1.18);
+  box-shadow: 0 2px 8px rgba(120, 100, 210, 0.13);
+}
+.actionBtn {
+  background: linear-gradient(135deg, #90caf9 0%, #b39ddb 100%);
+  color: #fff;
+  border-radius: 7px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(120, 100, 210, 0.08);
+}
+.actionBtn:hover {
+  background: linear-gradient(135deg, #7e57c2 0%, #64b5f6 100%);
+  transform: scale(1.04);
+} 

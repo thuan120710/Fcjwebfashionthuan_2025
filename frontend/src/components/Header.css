@@ -1,0 +1,112 @@
+/*
+  This component is now styled using MUI's `sx` prop and styled-components.
+  This file is kept for reference but is no longer actively used.
+*/
+
+.header {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo a {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+.search-form {
+  display: flex;
+  flex: 1;
+  max-width: 500px;
+  margin: 0 1rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+}
+
+.search-button {
+  background: #3f51b5;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background: #303f9f;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.nav-links li {
+  margin-left: 1.5rem;
+}
+
+.nav-links a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #3f51b5;
+}
+
+.cart-link {
+  display: flex;
+  align-items: center;
+}
+
+.cart-icon {
+  font-size: 1.2rem;
+  margin-right: 0.3rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+  }
+  
+  .logo {
+    margin-bottom: 1rem;
+  }
+  
+  .search-form {
+    width: 100%;
+    max-width: none;
+    margin: 0 0 1rem 0;
+  }
+  
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+  
+  .nav-links li {
+    margin: 0 0.75rem;
+  }
+}
