@@ -6,7 +6,7 @@ const GoogleLoginButton = () => {
   const handleGoogleLogin = () => {
     // Redirect người dùng đến route đăng nhập Google của backend
     window.location.href =
-      "https://jv1hrj85xc.execute-api.ap-southeast-1.amazonaws.com/Prod/api/auth/google";
+      "https://qk0ka1pe68.execute-api.ap-southeast-1.amazonaws.com/Prod/api/users/auth/google";
   };
 
   return (

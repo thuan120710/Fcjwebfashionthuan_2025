@@ -51,8 +51,11 @@ class User {
 
   // Phương thức để lưu user mới vào DynamoDB (đã hash password trước đó)
   async save() {
+    console.log("💾 Saving user to DynamoDB...");
+
     if (!this.id) {
       this.id = uuidv4(); // Tạo ID duy nhất nếu chưa có
+      console.log("💾 Generated new ID:", this.id);
     }
     // Update updatedAt timestamp
     this.updatedAt = new Date().toISOString();
@@ -62,8 +65,16 @@ class User {
       Item: { ...this },
     };
 
-    await dynamoDb.put(params).promise();
-    return this;
+    console.log("💾 DynamoDB put params:", JSON.stringify(params, null, 2));
+
+    try {
+      await dynamoDb.put(params).promise();
+      console.log("✅ User saved successfully to DynamoDB");
+      return this;
+    } catch (error) {
+      console.error("❌ Error saving user to DynamoDB:", error);
+      throw error;
+    }
   }
 
   // Phương thức so sánh mật khẩu
@@ -106,6 +117,76 @@ class User {
       return new User(result.Item);
     }
     return null;
+  }
+
+  // Static method để tìm user bằng Google ID
+  static async findByGoogleId(googleId) {
+    console.log("🔍 Searching for user with Google ID:", googleId);
+
+    const params = {
+      TableName: TABLE_NAME,
+      FilterExpression:
+        "googleId = :googleId AND (attribute_not_exists(isDeleted) OR isDeleted = :isDeleted)",
+      ExpressionAttributeValues: {
+        ":googleId": googleId,
+        ":isDeleted": false,
+      },
+    };
+
+    console.log("🔍 DynamoDB scan params:", JSON.stringify(params, null, 2));
+
+    try {
+      const result = await dynamoDb.scan(params).promise();
+      console.log("🔍 DynamoDB scan result:", {
+        Count: result.Count,
+        ScannedCount: result.ScannedCount,
+        Items: result.Items ? result.Items.length : 0,
+      });
+
+      if (result.Items && result.Items.length > 0) {
+        console.log("✅ Found user with Google ID:", result.Items[0]);
+        return new User(result.Items[0]);
+      }
+
+      console.log("❌ No user found with Google ID:", googleId);
+      return null;
+    } catch (error) {
+      console.error("❌ Error searching for user by Google ID:", error);
+      throw error;
+    }
+  }
+
+  // Static method để tạo user mới (dùng cho Google OAuth)
+  static async create(userData) {
+    console.log("🆕 Creating new user with data:", userData);
+
+    const user = new User({
+      id: uuidv4(),
+      ...userData,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+
+    console.log("🆕 User object created:", {
+      id: user.id,
+      email: user.email,
+      googleId: user.googleId,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    });
+
+    try {
+      const savedUser = await user.save();
+      console.log("✅ User saved successfully to DynamoDB:", {
+        id: savedUser.id,
+        email: savedUser.email,
+        googleId: savedUser.googleId,
+      });
+      return savedUser;
+    } catch (error) {
+      console.error("❌ Error saving user to DynamoDB:", error);
+      throw error;
+    }
   }
 
   // Static method để hash password (dùng trong controller khi tạo/cập nhật user)

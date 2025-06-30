@@ -117,6 +117,13 @@ const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
 
   if (user) {
+    console.log("DEBUG getUserProfile:", {
+      userId: user.id,
+      userFound: true,
+      avatar: user.avatar,
+      avatarType: typeof user.avatar,
+    });
+
     res.json({
       id: user.id,
       username: user.username,
