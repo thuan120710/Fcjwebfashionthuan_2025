@@ -52,13 +52,23 @@ Resources:
                 - dynamodb:DeleteItem
                 - dynamodb:Scan
                 - dynamodb:Query
-                - s3:PutObject
-                - s3:GetObject
-                - s3:DeleteObject
               Resource:
                 - !GetAtt ShopReviewsTable.Arn
                 - !Sub "${ShopReviewsTable.Arn}/index/*"
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:GetObject
+                - s3:DeleteObject
+                - s3:PutObjectAcl
+                - s3:GetObjectAcl
+              Resource:
                 - arn:aws:s3:::uploands-avatars-2025/*
+            - Effect: Allow
+              Action:
+                - s3:ListBucket
+              Resource:
+                - arn:aws:s3:::uploands-avatars-2025
       Environment:
         Variables:
           USERS_TABLE_NAME: ShopUsers
@@ -73,9 +83,15 @@ Resources:
           PAYMENTS_TABLE_NAME: ShopPayments
           GOOGLE_CLIENT_ID:
           GOOGLE_CLIENT_SECRET:
-          JWT_SECRET: your_jwt_secret_here
+          JWT_SECRET:
           REVIEWS_TABLE_NAME: ShopReviews
           AVATAR_BUCKET_NAME: uploands-avatars-2025
+          NODE_ENV: production
+          EMAIL_USER: duythuan.pt3107@gmail.com
+          EMAIL_PASS: zanl hlbu qrgr lfht
+          EMAIL_HOST: smtp.gmail.com
+          EMAIL_PORT: 465
+          FRONTEND_URL: http://my-frontend-bucket-2025.s3-website-ap-southeast-1.amazonaws.com
       Events:
         Api:
           Type: Api
